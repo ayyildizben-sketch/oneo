@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ONEO - Giriş ve Oyun Merkezi</title>
+<style>
+  :root{--bg:#0b0f1a;--card:#161c2e;--acc:#3b82f6;--ok:#22c55e;--warn:#f59e0b;--tx:#e5e7eb}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,sans-serif;padding:24px;display:flex;flex-direction:column;align-items:center}
+  .container{width:100%;max-width:800px}
+  h1{margin:0 0 4px;text-align:center}
+  .not{font-size:13px;color:#9ca3af;text-align:center;margin-bottom:20px}
+  .card{background:var(--card);padding:20px;border-radius:12px;border:1px solid #2b3552;margin-bottom:20px;box-shadow:0 4px 12px rgba(0,0,0,0.3)}
+  .bar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:12px 0}
+  button,input{font:inherit;border-radius:8px;border:1px solid #2b3552;background:var(--bg);color:var(--tx);padding:10px 16px}
+  button{cursor:pointer;background:var(--acc);border-color:var(--acc);font-weight:600}
+  button:hover{filter:brightness(1.15)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;margin-top:16px}
+  .oyun-kart{background:var(--card);border-radius:12px;padding:16px;border:1px solid #2b3552;text-align:center;cursor:pointer;transition:transform .15s}
+  .oyun-kart:hover{transform:translateY(-3px);border-color:var(--acc)}
+  .hidden{display:none !important;}
+  #userBar{display:flex;justify-content:space-between;align-items:center;width:100%;background:var(--card);padding:10px 20px;border-radius:8px;margin-bottom:20px}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>🎮 ONEO</h1>
+  <div class="not">OyuN Eğlence Merkezi</div>
+
+  <!-- GİRİŞ / HESAP OLUŞTURMA EKRANI -->
+  <div id="authScreen" class="card">
+    <h2>Hesap İşlemleri</h2>
+    <p class="not" style="text-align:left">Oynamak ve skorlarını kaydetmek için giriş yap veya yeni hesap aç.</p>
+    <div class="bar">
+      <input id="kadi" placeholder="Kullanıcı Adı">
+      <button id="girisBtn">Giriş Yap / Kayıt Ol</button>
+    </div>
+  </div>
+
+  <!-- OYUN MERKEZİ (Giriş yapınca görünür) -->
+  <div id="gameScreen" class="hidden">
+    <div id="userBar">
+      <span>Hoş geldin, <b id="aktifKullanici"></b></span>
+      <button id="cikisBtn" style="background:#ef4444;border-color:#ef4444;padding:4px 10px;font-size:12px">Çıkış Yap</button>
+    </div>
+
+    <h2>Kütüphane</h2>
+    <div class="grid" id="oyunListesi">
+      <!-- Oyunlar dinamik eklenecek -->
+      <div class="oyun-kart" onclick="oyunBaslat('Yılan')">
+        <h3>🐍 Yılan</h3>
+        <p class="not">Klasik Yılan Oyunu</p>
+      </div>
+      <div class="oyun-kart" onclick="oyunBaslat('Pong')">
+        <h3>🏓 Pong</h3>
+        <p class="not">Rakibe karşı tenis</p>
+      </div>
+      <div class="oyun-kart" onclick="oyunBaslat('Uçan Kuş')">
+        <h3>🐦 Uçan Kuş</h3>
+        <p class="not">Engellerin arasından geç</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const girisBtn = document.getElementById('girisBtn');
+  const kadiInput = document.getElementById('kadi');
+  const authScreen = document.getElementById('authScreen');
+  const gameScreen = document.getElementById('gameScreen');
+  const aktifKullanici = document.getElementById('aktifKullanici');
+  const cikisBtn = document.getElementById('cikisBtn');
+
+  // Sayfa açıldığında oturum kontrolü
+  const kayitliUser = localStorage.getItem('oneo_aktif_user');
+  if(kayitliUser) {
+    userGiris(kayitliUser);
+  }
+
+  girisBtn.addEventListener('click', () => {
+    const val = kadiInput.value.trim();
+    if(!val) { alert('Lütfen bir kullanıcı adı girin!'); return; }
+    localStorage.setItem('oneo_aktif_user', val);
+    userGiris(val);
+  });
+
+  cikisBtn.addEventListener('click', () => {
+    localStorage.removeItem('oneo_aktif_user');
+    authScreen.classList.remove('hidden');
+    gameScreen.classList.add('hidden');
+    kadiInput.value = '';
+  });
+
+  function userGiris(user) {
+    aktifKullanici.textContent = user;
+    authScreen.classList.add('hidden');
+    gameScreen.classList.remove('hidden');
+  }
+
+  function oyunustu(oyunAdi) {
+    alert(oyunAdi + " başlatılıyor...");
+    // Buradan oyun.html sayfasına yönlendirme yapabilirsiniz
+    // window.location.href = 'oyun.html?oyun=' + encodeURIComponent(oyunAdi);
+  }
+</script>
+
+</body>
+</html>
